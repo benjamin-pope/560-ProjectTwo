@@ -23,10 +23,15 @@ A data cleaning project  taking a combination of datasets and make sense of them
 You’ll want to go from the raw data to a version that’s easy to do analysis with. In order to do this, you’ll need to:
 
 •	Find a messy dataset. Avoid picking anything that is already clean — you want there to be multiple data files, and some nuance to the data.
+
 •	Pick a question to answer using the data.  Explore the data
+
 •	Clean up the data
+
 •	Do some basic analysis. Try to answer the question you picked initially
+
 •	Present your results.  Use R markdown to  do the data cleaning and analysis
+
 
 Data Storytelling Project
 Type of project demonstrates your ability to extract insights from data and persuade others and is closely related to the work in the data cleaning activities.  This type of project involves taking a set of data and telling a compelling narrative with it. For example, using the flight delays data set we used you could use the data to show that there are significant delays at certain airports.  You can suggest solutions to address such as changing depart times or by changing the routing.
