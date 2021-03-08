@@ -11,6 +11,7 @@ Taking a portfolio approach to your data mining projects can provide you with ev
 Your Data Mining Portfolio Contents
 One question to address is where to put your projects.  One recommended locations is Gitbub.  Another  is your own log.  There you will want to make your code visible and well-documented.  This will provide an easy access to your work as well as allow evaluation.  
 It is useful to document your projects as well as possible.   Typically, including a README file explaining how to set up and run the code, discuss needed packages , and discuss the data, possibly including a data dictionary.
+
 There are several different types of projects you will want to include.  These will be based on the data mining methodology.  Ideally, you would have multiple projects of each type and especially, types based on the type of job you want.   For instance, 
 Jobs that require a lot of machine learning suggest that you provide more end to end projects that use machine learning. On the other hand,  for analyst positions data cleaning and storytelling projects may be more relevant.
 
@@ -32,9 +33,13 @@ Type of project demonstrates your ability to extract insights from data and pers
 Visualizations can be effective here and judicious use of graphs and text can play a key role. Here are some stepsto build a good data storytelling project:
 
 •	Find an interesting dataset
+
 •	Explore a few angles in the data. Explore the data. Look for correlations in the data and create charts.
+
 •	Write up a compelling narrative.  Identify the most interesting angle from your explorations and write extensive analysis of the results of each step, and what they tell a reader
+
 •	Present your results.  Use R Markdown including documentation so  that your code and logic can be followed explaining your process as you can
+
 
 End to End  Data Mining Project
 The  exploratory data cleaning and analysis project provide information about how well you can extract insights and present them to others. However, they don’t demonstrate that you can build systems that are customer-facing.  Ultimately, that is the target of the data mining models being developed – deployment for use.   Customer-facing systems involve code that can be run multiple times with different pieces of data to generate different outputs.   Possibly, downloading new data daily or hourly for subsequent use.
@@ -42,6 +47,10 @@ An end to end project takes in and processes data, then generates some output.  
 The key here is to make the system flexible enough to work with new data  and also i make the code easy to setup and run. Here are typical steps you’ll need to follow to build a good end to end project:
 
 •	Find an interesting topic – You won’t focus on a single static dataset, so you’ll want to find a topic instead such as flights, electricity pricing, health.
+
 •	Import and parse multiple datasets
+
 •	Create classifications or predictions.   Determine the needed features and create training and test data.  Using that to make predictions or classifications.
+
 •	Clean up and document your code
+
