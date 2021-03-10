@@ -1,0 +1,175 @@
+---
+title: "Project Two"
+author: "Benjamin Pope"
+date: "3/8/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE}
+#Library
+library(e1071)
+library(klaR)
+library(nnet)
+library(neuralnet)
+library(MASS)
+library(rpart)
+library(randomForest)
+library(mlbench) #Includes BreastCancer data set.
+library(caret)
+library(stringr)
+```
+
+```{r Import data}
+#Import data
+data("BreastCancer")
+
+# Set up columns correctly. 
+# Set label as the first column in data frame.
+mydata <- cbind(BreastCancer[11],BreastCancer[2:10])
+summary(mydata)
+str(mydata)
+```
+
+```{r Data Clean-up}
+#Impute missing values with mean
+for (i in 1:ncol(mydata)) {
+  mydata[is.na(mydata[,i]), i] <- floor(mean(as.numeric(mydata[,i]), na.rm = TRUE))
+}
+mydata$Malignant_1 <- ifelse(mydata$Class == "malignant",1,0)  #Set our label to binary for our numerical data frame
+
+mydata.num <- as.data.frame(apply(mydata[,2:11],2,as.numeric))
+mydata.num <- cbind(mydata.num[10],mydata.num[1:9]) # Reorder our numerical data frame so that our label is first
+mydata <- mydata[,1:10] #Removes our numerical label from our factored data frame 
+
+```
+
+
+```{r Split train and valid sets.}
+#Partition Data
+t_index <- sample(c(1:dim(mydata)[1]), dim(mydata)[1]*.6) # Sets our training data to 60% of our data
+train.df <- mydata[t_index, ]
+valid.df <- mydata[-t_index, ]
+
+```
+
+
+
+```{r Support Vector Machines }
+# Support Vector machines
+bdsvm <- svm(Class~.,train.df)
+bdsvm.pred <- predict(bdsvm,train.df)
+confusionMatrix(as.factor(bdsvm.pred), as.factor(train.df$Class))
+
+bdsvm.v.pred <- predict(bdsvm, valid.df)
+confusionMatrix(as.factor(bdsvm.v.pred), as.factor(valid.df$Class))
+```
+
+```{r Naive Bays }
+#Naive Bays
+bdnvb <-NaiveBayes(Class ~., train.df)
+bdnvb.pred <- predict(bdnvb, train.df)
+confusionMatrix(as.factor(bdnvb.pred$class), as.factor(train.df$Class))
+
+bdnvb.v.pred <- predict(bdnvb, valid.df)
+confusionMatrix(as.factor(bdnvb.v.pred$class), as.factor(valid.df$Class))
+
+```
+
+```{r Neural Net setup}
+#Neural Net
+#Set our training and validation datasets.  *NOTE be sure to use our numerical data frames for NN 
+train.num.df <- mydata.num[t_index, ]
+valid.num.df <- mydata.num[-t_index, ]
+
+#normalize training and valid sets.
+norm_values <- preProcess(train.num.df[,2:10])
+train.norm.df <- predict(norm_values, train.num.df)
+valid.norm.df <- predict(norm_values, valid.num.df)
+```
+
+```{r Initialize Neural Net}
+#Create Neural Network
+bdnnet <- neuralnet(Malignant_1 ~ .,linear.output = T, data = train.norm.df, hidden = c(2,5), rep = 5) #NN of 2 layers with 5 nodes.  
+train.pred <- compute(bdnnet, train.norm.df)
+train.class <- ifelse(train.pred$net.result > .5, 1, 0)
+confusionMatrix(as.factor(train.class), as.factor(train.num.df$Malignant_1))
+
+valid.pred <- compute(bdnnet, valid.norm.df)
+valid.class <- ifelse(valid.pred$net.result > .5, 1, 0)
+
+confusionMatrix(as.factor(valid.class), as.factor(valid.norm.df$Malignant_1))
+
+```
+
+```{r Decision Trees}
+#Decision trees
+bdtree <- rpart(Class~ ., mydata)
+plot(bdtree); text(bdtree)
+summary(bdtree)
+bdtree.pred <- predict(bdtree, mydata, type = "class")
+
+confusionMatrix(bdtree.pred, mydata$Class)
+
+```
+
+```{r Cross Validation }
+# Leave-1-Out Cross Validation (LOOCV)
+
+
+
+ans <- numeric(length(mydata[,1]))
+for (i in 1:length(mydata[,1])) {
+  bdtree2 <- rpart(Class ~ ., mydata[-i,])
+  bdtree2.pred <- predict(bdtree, mydata[i,],type="class")
+  ans[i] <- bdtree2.pred
+}
+ans <- factor(ans,labels=levels(mydata$Class))
+table(ans,mydata$Class)
+confusionMatrix(as.factor(ans), as.factor(mydata$Class))
+# The same as above in this case
+```
+
+```{r}
+qda_class <- mydata$Class
+bdqda <- qda(Class ~ Marg.adhesion + Bare.nuclei + Mitoses, train.df, qda_class)
+
+```
+
+
+#Quadratic Discriminant Analysis
+myqda <- qda(Species ~ ., iris)
+myqda.pred <- predict(myqda, iris)
+table(myqda.pred$class,iris$Species)
+#              setosa versicolor virginica
+#   setosa     50      0          0
+#   versicolor  0     48          1
+#   virginica   0      2         49
+
+```{r Regularized Discriminant Analysis }
+bdrda <- rda(Class ~ ., train.df)
+bdrda.pred <- predict(bdrda, train.df)
+confusionMatrix(as.factor(bdrda.pred$class), as.factor(train.df$Class))
+
+bdrda2 <- rda(Class ~ ., mydata)
+bdrda2.pred <- predict(bdrda2, mydata)
+confusionMatrix(as.factor(bdrda2.pred$class), as.factor(mydata$Class))
+```
+
+```{r Random Forests }
+#Random Forests
+
+bdrf <- randomForest(Class~., train.df, importance= TRUE)
+bdrf.pred <- predict(bdrf, train.df)
+confusionMatrix(bdrf.pred, train.df$Class)
+# (Suspiciously correct! - need to read the manual)
+
+bdrf.v.pred <- predict(bdrf, valid.df)
+confusionMatrix(as.factor(bdrf.v.pred), as.factor(valid.df$Class))
+
+```
+
+
