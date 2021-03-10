@@ -33,17 +33,17 @@ data(BreastCancer)
 
 Format
 A data frame with 699 observations on 11 variables, one being a character variable, 9 being orderedor nominal, and 1 target class.
-[,1]IdSample code number
-[,2]Cl.thicknessClump Thickness
-[,3]Cell.sizeUniformity of Cell Size
-[,4]Cell.shapeUniformity of Cell Shape
-[,5]Marg.adhesionMarginal Adhesion
-[,6]Epith.c.sizeSingle Epithelial Cell Size
-[,7]Bare.nucleiBare Nuclei
-[,8]Bl.cromatinBland Chromatin
-[,9]Normal.nucleoliNormal Nucleoli
-[,10]MitosesMitoses
-[,11]ClassClassSource
+[,1]IdSample code number\n
+[,2]Cl.thicknessClump Thickness\n
+[,3]Cell.sizeUniformity of Cell Size\n
+[,4]Cell.shapeUniformity of Cell Shape\n
+[,5]Marg.adhesionMarginal Adhesion\n
+[,6]Epith.c.sizeSingle Epithelial Cell Size\n
+[,7]Bare.nucleiBare Nuclei\n
+[,8]Bl.cromatinBland Chromatin\n
+[,9]Normal.nucleoliNormal Nucleoli\n
+[,10]MitosesMitoses\n
+[,11]ClassClassSource\n
 
 .  Creator:  Dr.  WIlliam H. Wolberg (physician); University of Wisconsin Hospital ;Madison;Wisconsin; USA
 .  Donor: Olvi Mangasarian (mangasarian@cs.wisc.edu)
