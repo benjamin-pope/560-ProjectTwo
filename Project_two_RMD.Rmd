@@ -30,11 +30,13 @@ data("BreastCancer")
 # Set up columns correctly. 
 # Set label as the first column in data frame.
 mydata <- cbind(BreastCancer[11],BreastCancer[2:10])
-summary(mydata)
-str(mydata)
 ```
 
 ```{r Data Clean-up}
+#Look at the data to see its structure and if there are any missing values. 
+summary(mydata)
+str(mydata)
+
 #Impute missing values with mean
 for (i in 1:ncol(mydata)) {
   mydata[is.na(mydata[,i]), i] <- floor(mean(as.numeric(mydata[,i]), na.rm = TRUE))
