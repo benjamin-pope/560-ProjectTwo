@@ -63,6 +63,7 @@ valid.df <- mydata[-t_index, ]
 accuracy.df <- data.frame(Model = seq(1, 8,1), Train_Accuracy_score = rep(0,8) ,Valid_Accuracy_score = rep(0,8))
 ```
 
+
 ```{r Support Vector Machines }
 # Support Vector machines
 accuracy.df[1,1] <- "Support Vector Machines"
