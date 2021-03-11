@@ -18,7 +18,7 @@ library(neuralnet)
 library(MASS)
 library(rpart)
 library(randomForest)
-library(mlbench) #Includes BreastCancer data set.
+library(mlbench) #Includes BreastCancer data set. 
 library(caret)
 library(stringr)
 ```
@@ -58,27 +58,35 @@ valid.df <- mydata[-t_index, ]
 
 ```
 
+```{r}
+#set up data frame for collecting accuracy
+accuracy.df <- data.frame(Model = seq(1, 7,1), Train_Accuracy_score = rep(0,7) ,Valid_Accuracy_score = rep(0,7))
+```
 
 
 ```{r Support Vector Machines }
 # Support Vector machines
+accuracy.df[1,1] <- "Support Vector Machines"
 bdsvm <- svm(Class~.,train.df)
 bdsvm.pred <- predict(bdsvm,train.df)
-confusionMatrix(as.factor(bdsvm.pred), as.factor(train.df$Class))
-
+accuracy.df[1,2] <-confusionMatrix(as.factor(bdsvm.pred), as.factor(train.df$Class))$overall[1]
+#Create Predictions
 bdsvm.v.pred <- predict(bdsvm, valid.df)
-confusionMatrix(as.factor(bdsvm.v.pred), as.factor(valid.df$Class))
+#put in accuracy to data frame
+accuracy.df[1,3] <- confusionMatrix(as.factor(bdsvm.v.pred), as.factor(valid.df$Class))$overall[1]
+
 ```
 
 ```{r Naive Bays }
 #Naive Bays
+accuracy.df[2,1] <- "Naive Bays"
 bdnvb <-NaiveBayes(Class ~., train.df)
 bdnvb.pred <- predict(bdnvb, train.df)
-confusionMatrix(as.factor(bdnvb.pred$class), as.factor(train.df$Class))
-
+accuracy.df[2,2] <- confusionMatrix(as.factor(bdnvb.pred$class), as.factor(train.df$Class))$overall[1]
+#Create Predictions
 bdnvb.v.pred <- predict(bdnvb, valid.df)
-confusionMatrix(as.factor(bdnvb.v.pred$class), as.factor(valid.df$Class))
-
+#Put in accuracy into data frame
+accuracy.df[2,3] <- confusionMatrix(as.factor(bdnvb.v.pred$class), as.factor(valid.df$Class))$overall[1]
 ```
 
 ```{r Neural Net setup}
@@ -95,33 +103,34 @@ valid.norm.df <- predict(norm_values, valid.num.df)
 
 ```{r Initialize Neural Net}
 #Create Neural Network
+accuracy.df[3,1] <- "Neural Net"
 bdnnet <- neuralnet(Malignant_1 ~ .,linear.output = T, data = train.norm.df, hidden = c(2,5), rep = 5) #NN of 2 layers with 5 nodes.  
 train.pred <- compute(bdnnet, train.norm.df)
 train.class <- ifelse(train.pred$net.result > .5, 1, 0)
-confusionMatrix(as.factor(train.class), as.factor(train.num.df$Malignant_1))
-
+accuracy.df[3,2] <- confusionMatrix(as.factor(train.class), as.factor(train.num.df$Malignant_1))$overall[1]
+#create Predictions
 valid.pred <- compute(bdnnet, valid.norm.df)
 valid.class <- ifelse(valid.pred$net.result > .5, 1, 0)
-
-confusionMatrix(as.factor(valid.class), as.factor(valid.norm.df$Malignant_1))
+#put in accuracy to data frame.
+accuracy.df[3,3] <- confusionMatrix(as.factor(valid.class), as.factor(valid.norm.df$Malignant_1))$overall[1]
 
 ```
 
 ```{r Decision Trees}
 #Decision trees
+accuracy.df[4,1] <- "Decision Tree"
 bdtree <- rpart(Class~ ., mydata)
-plot(bdtree); text(bdtree)
-summary(bdtree)
+#create predictions for DT
 bdtree.pred <- predict(bdtree, mydata, type = "class")
-
-confusionMatrix(bdtree.pred, mydata$Class)
+#put in accuracy to data frame.
+accuracy.df[4,3] <- confusionMatrix(bdtree.pred, mydata$Class)$overall[1]
 
 ```
 
 ```{r Cross Validation }
 # Leave-1-Out Cross Validation (LOOCV)
 
-
+accuracy.df[5,1] <- "Leave-1-Out Cross Validation (LOOCV)"
 
 ans <- numeric(length(mydata[,1]))
 for (i in 1:length(mydata[,1])) {
@@ -131,47 +140,48 @@ for (i in 1:length(mydata[,1])) {
 }
 ans <- factor(ans,labels=levels(mydata$Class))
 table(ans,mydata$Class)
-confusionMatrix(as.factor(ans), as.factor(mydata$Class))
+accuracy.df[5,3] <- confusionMatrix(as.factor(ans), as.factor(mydata$Class))$overall[1]
 # The same as above in this case
 ```
 
-```{r}
-qda_class <- mydata$Class
-bdqda <- qda(Class ~ Marg.adhesion + Bare.nuclei + Mitoses, train.df, qda_class)
-
-```
-
-
-#Quadratic Discriminant Analysis
-myqda <- qda(Species ~ ., iris)
-myqda.pred <- predict(myqda, iris)
-table(myqda.pred$class,iris$Species)
-#              setosa versicolor virginica
-#   setosa     50      0          0
-#   versicolor  0     48          1
-#   virginica   0      2         49
-
-```{r Regularized Discriminant Analysis }
+```{r Regularized Discriminant Analysis } 
+accuracy.df[6,1] <- "Regularized Discriminant Analysis"
 bdrda <- rda(Class ~ ., train.df)
 bdrda.pred <- predict(bdrda, train.df)
-confusionMatrix(as.factor(bdrda.pred$class), as.factor(train.df$Class))
+accuracy.df[6,2] <- confusionMatrix(as.factor(bdrda.pred$class), as.factor(train.df$Class))$overall[1]
 
 bdrda2 <- rda(Class ~ ., mydata)
 bdrda2.pred <- predict(bdrda2, mydata)
-confusionMatrix(as.factor(bdrda2.pred$class), as.factor(mydata$Class))
+accuracy.df[6,3] <- confusionMatrix(as.factor(bdrda2.pred$class), as.factor(mydata$Class))$overall[1]
 ```
 
 ```{r Random Forests }
 #Random Forests
-
+accuracy.df[7,1] <- "Random Forests"
 bdrf <- randomForest(Class~., train.df, importance= TRUE)
 bdrf.pred <- predict(bdrf, train.df)
-confusionMatrix(bdrf.pred, train.df$Class)
+accuracy.df[7,2] <- confusionMatrix(bdrf.pred, train.df$Class)$overall[1]
 # (Suspiciously correct! - need to read the manual)
 
 bdrf.v.pred <- predict(bdrf, valid.df)
-confusionMatrix(as.factor(bdrf.v.pred), as.factor(valid.df$Class))
+accuracy.df[7,3] <- confusionMatrix(as.factor(bdrf.v.pred), as.factor(valid.df$Class))$overall[1]
 
 ```
 
+```{r}
+accuracy.df
+```
+```{r Ensamble model }
+#Pull in results from three models
+as.data.frame(bdsvm.pred)[1]
+as.data.frame(bdnvb.pred)[1]
+as.data.frame(bdrda.pred)[1]
+
+#Use median answer as output
+ensamble.df <- cbind(as.data.frame(bdsvm.pred)[1],as.data.frame(bdnvb.pred)[1],as.data.frame(bdrda.pred)[1])
+colnames(ensamble.df) <-c("svm", "nvb", "rda")
+
+ensamble.df[1:4,]
+
+```
 

@@ -25,26 +25,43 @@ The key here is to make the system flexible enough to work with new data  and al
 The data set chosen for this Project is the "BreastCancer" data from the Mlbench library in R. For more information about mlbench, and to find extended documentation, follow this link:  https://cran.r-project.org/web/packages/mlbench/mlbench.pdf
 
 Below is a condensed description of our data:
-Description
+
+Description:
+
 The objective is to identify each of a number of benign or malignant classes.  Samples arrive periodically as Dr. Wolberg reports his clinical cases. The database therefore reflects this chronological grouping of the data. This grouping information appears immediately below, having been removed from the data itself.  Each variable except for the first was converted into 11 primitive numerical attributes with values ranging from 0 through 10.  There are 16 missing attribute values.  See cited below for more details.
 
 Usage
+
 data(BreastCancer)
 
-Format
+Format:
 A data frame with 699 observations on 11 variables, one being a character variable, 9 being orderedor nominal, and 1 target class.
+
 [,1]IdSample code number
+
 [,2]Cl.thicknessClump Thickness
+
 [,3]Cell.sizeUniformity of Cell Size
+
 [,4]Cell.shapeUniformity of Cell Shape
+
 [,5]Marg.adhesionMarginal Adhesion
+
 [,6]Epith.c.sizeSingle Epithelial Cell Size
+
 [,7]Bare.nucleiBare Nuclei
+
 [,8]Bl.cromatinBland Chromatin
+
 [,9]Normal.nucleoliNormal Nucleoli
+
 [,10]MitosesMitoses
+
 [,11]ClassClassSource
 
+
 .  Creator:  Dr.  WIlliam H. Wolberg (physician); University of Wisconsin Hospital ;Madison;Wisconsin; USA
+
 .  Donor: Olvi Mangasarian (mangasarian@cs.wisc.edu)
+
 .  Received: David W. Aha (aha@cs.jhu.edu)
