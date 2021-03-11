@@ -60,9 +60,8 @@ valid.df <- mydata[-t_index, ]
 
 ```{r}
 #set up data frame for collecting accuracy
-accuracy.df <- data.frame(Model = seq(1, 7,1), Train_Accuracy_score = rep(0,7) ,Valid_Accuracy_score = rep(0,7))
+accuracy.df <- data.frame(Model = seq(1, 8,1), Train_Accuracy_score = rep(0,8) ,Valid_Accuracy_score = rep(0,8))
 ```
-
 
 ```{r Support Vector Machines }
 # Support Vector machines
@@ -142,7 +141,7 @@ for (i in 1:length(valid.df[,1])) {
   ans[i] <- bdtree2.pred
 }
 ans <- factor(ans,labels=levels(valid.df$Class))
-table(ans,valid.df$Class)
+
 accuracy.df[5,3] <- confusionMatrix(as.factor(ans), as.factor(valid.df$Class))$overall[1]
 # The same as above in this case
 ```
@@ -171,9 +170,6 @@ accuracy.df[7,3] <- confusionMatrix(as.factor(bdrf.v.pred), as.factor(valid.df$C
 
 ```
 
-```{r}
-accuracy.df
-```
 ```{r Ensamble model }
 #Pull in results from three models
 
@@ -195,6 +191,10 @@ ensamble.df$combo <- rowSums(e)
 #Give us a class based answer again
 ensamble.df$combo_class <- ifelse(ensamble.df$combo >=4,"malignant", "benign")
 #Check our accuracy with our ensamble score 
-confusionMatrix(as.factor(ensamble.df$combo_class), as.factor(valid.df$Class))
+accuracy.df[8,1] <- "Combo Score "
+accuracy.df[8,3] <- confusionMatrix(as.factor(ensamble.df$combo_class), as.factor(valid.df$Class))$overall[1]
 ```
 
+```{r}
+accuracy.df
+```
