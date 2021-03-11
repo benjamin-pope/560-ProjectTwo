@@ -101,7 +101,7 @@ train.norm.df <- predict(norm_values, train.num.df)
 valid.norm.df <- predict(norm_values, valid.num.df)
 ```
 
-```{r Initialize Neural Net}
+```{r Running Neural Net}
 #Create Neural Network
 accuracy.df[3,1] <- "Neural Net"
 bdnnet <- neuralnet(Malignant_1 ~ .,linear.output = T, data = train.norm.df, hidden = c(2,5), rep = 5) #NN of 2 layers with 5 nodes.  
@@ -119,11 +119,14 @@ accuracy.df[3,3] <- confusionMatrix(as.factor(valid.class), as.factor(valid.norm
 ```{r Decision Trees}
 #Decision trees
 accuracy.df[4,1] <- "Decision Tree"
-bdtree <- rpart(Class~ ., mydata)
+bdtree <- rpart(Class~ ., train.df)
 #create predictions for DT
-bdtree.pred <- predict(bdtree, mydata, type = "class")
+bdtree.pred <- predict(bdtree, train.df, type = "class")
+bdtree.v.pred <- predict(bdtree, valid.df, type = "class")
 #put in accuracy to data frame.
-accuracy.df[4,3] <- confusionMatrix(bdtree.pred, mydata$Class)$overall[1]
+accuracy.df[4,2] <- confusionMatrix(as.factor(bdtree.pred), as.factor(train.df$Class))$overall[1]
+
+accuracy.df[4,3] <- confusionMatrix(bdtree.v.pred, valid.df$Class)$overall[1]
 
 ```
 
@@ -132,15 +135,15 @@ accuracy.df[4,3] <- confusionMatrix(bdtree.pred, mydata$Class)$overall[1]
 
 accuracy.df[5,1] <- "Leave-1-Out Cross Validation (LOOCV)"
 
-ans <- numeric(length(mydata[,1]))
-for (i in 1:length(mydata[,1])) {
-  bdtree2 <- rpart(Class ~ ., mydata[-i,])
-  bdtree2.pred <- predict(bdtree, mydata[i,],type="class")
+ans <- numeric(length(as.numeric(valid.df[,1])))
+for (i in 1:length(valid.df[,1])) {
+  bdtree2 <- rpart(Class ~ ., valid.df[-i,])
+  bdtree2.pred <- predict(bdtree, valid.df[i,],type="class")
   ans[i] <- bdtree2.pred
 }
-ans <- factor(ans,labels=levels(mydata$Class))
-table(ans,mydata$Class)
-accuracy.df[5,3] <- confusionMatrix(as.factor(ans), as.factor(mydata$Class))$overall[1]
+ans <- factor(ans,labels=levels(valid.df$Class))
+table(ans,valid.df$Class)
+accuracy.df[5,3] <- confusionMatrix(as.factor(ans), as.factor(valid.df$Class))$overall[1]
 # The same as above in this case
 ```
 
@@ -151,8 +154,8 @@ bdrda.pred <- predict(bdrda, train.df)
 accuracy.df[6,2] <- confusionMatrix(as.factor(bdrda.pred$class), as.factor(train.df$Class))$overall[1]
 
 bdrda2 <- rda(Class ~ ., mydata)
-bdrda2.pred <- predict(bdrda2, mydata)
-accuracy.df[6,3] <- confusionMatrix(as.factor(bdrda2.pred$class), as.factor(mydata$Class))$overall[1]
+bdrda.v.pred <- predict(bdrda, valid.df)
+accuracy.df[6,3] <- confusionMatrix(as.factor(bdrda.v.pred$class), as.factor(valid.df$Class))$overall[1]
 ```
 
 ```{r Random Forests }
@@ -173,15 +176,25 @@ accuracy.df
 ```
 ```{r Ensamble model }
 #Pull in results from three models
-as.data.frame(bdsvm.pred)[1]
-as.data.frame(bdnvb.pred)[1]
-as.data.frame(bdrda.pred)[1]
 
-#Use median answer as output
-ensamble.df <- cbind(as.data.frame(bdsvm.pred)[1],as.data.frame(bdnvb.pred)[1],as.data.frame(bdrda.pred)[1])
-colnames(ensamble.df) <-c("svm", "nvb", "rda")
 
-ensamble.df[1:4,]
+ensamble.df <- cbind(as.data.frame(bdsvm.v.pred)[1],as.data.frame(bdnvb.v.pred)[1],as.data.frame(valid.class)[1],as.data.frame(bdtree.v.pred)[1],as.data.frame(ans),as.data.frame(bdrda.v.pred)[1],as.data.frame(bdrf.v.pred)[1])
+colnames(ensamble.df) <-c("svm", "nvb", "nnet","dectree","LOOCV", "rda", "rf" )
 
+ensamble.df$svm <- ifelse(ensamble.df$svm == "malignant",1,0)
+ensamble.df$nvb <- ifelse(ensamble.df$nvb == "malignant",1,0)
+ensamble.df$dectree <- ifelse(ensamble.df$dectree =="malignant",1,0)
+ensamble.df$rda <- ifelse(ensamble.df$rda == "malignant",1,0)
+ensamble.df$LOOCV <- ifelse(ensamble.df$LOOCV =="malignant",1,0)
+ensamble.df$rf <- ifelse(ensamble.df$rf =="malignant",1,0)
+#Use sum answer as output
+e <- as.matrix(ensamble.df) #matrix for rowsums
+#put our sums back onto the ensamble data frame. 
+ensamble.df$combo <- rowSums(e)
+
+#Give us a class based answer again
+ensamble.df$combo_class <- ifelse(ensamble.df$combo >=4,"malignant", "benign")
+#Check our accuracy with our ensamble score 
+confusionMatrix(as.factor(ensamble.df$combo_class), as.factor(valid.df$Class))
 ```
 
