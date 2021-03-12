@@ -197,5 +197,6 @@ accuracy.df[8,3] <- confusionMatrix(as.factor(ensamble.df$combo_class), as.facto
 ```
 
 ```{r}
+#Here is all of our models accuaracies.  We can take these results to our deployment when we decidee on which models to use.  
 accuracy.df
 ```
