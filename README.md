@@ -3,7 +3,6 @@ Project two for TBANLT 560 Data Mining
 
 Description.
 This project involves generating several classification models for the same data set and then combining the output from the models in an ensemble fashion. 
-An r file is provided that generates classification models using the Iris data set.  You will want to adapt this for the BreastCancer data set which is provided.  You will want to add code that combines the output from the different models using Majority rule ensemble approach.
 
 A data mining Portfolio
 Taking a portfolio approach to your data mining projects can provide you with evidence of your data mining abilities and of the types of work you can conduct.  This can be valuable for providing information about your technical abilities, your ability to conduct data analytics, and conduct data mining activities.  From an employment perspective it can help employers quickly identify who can do the necessary work.    This is particularly useful when your data mining projects look like the types of work you would do when hired.   With data mining this can be achieved by developing a portfolio of projects. The more realistic the projects are the more assurance you provide  that you will be an asset to an organization.
