@@ -1,25 +1,11 @@
 # 560-ProjectTwo
 Project two for TBANLT 560 Data Mining
+End to End  Data Mining Project
 
 Description.
+
 This project involves generating several classification models for the same data set and then combining the output from the models in an ensemble fashion. 
 An r file is provided that generates classification models using the Iris data set.  You will want to adapt this for the BreastCancer data set which is provided.  You will want to add code that combines the output from the different models using Majority rule ensemble approach.
-
-A data mining Portfolio
-Taking a portfolio approach to your data mining projects can provide you with evidence of your data mining abilities and of the types of work you can conduct.  This can be valuable for providing information about your technical abilities, your ability to conduct data analytics, and conduct data mining activities.  From an employment perspective it can help employers quickly identify who can do the necessary work.    This is particularly useful when your data mining projects look like the types of work you would do when hired.   With data mining this can be achieved by developing a portfolio of projects. The more realistic the projects are the more assurance you provide  that you will be an asset to an organization.
-
-End to End  Data Mining Project
-The  exploratory data cleaning and analysis project provide information about how well you can extract insights and present them to others. However, they don’t demonstrate that you can build systems that are customer-facing.  Ultimately, that is the target of the data mining models being developed – deployment for use.   Customer-facing systems involve code that can be run multiple times with different pieces of data to generate different outputs.   Possibly, downloading new data daily or hourly for subsequent use.
-An end to end project takes in and processes data, then generates some output.  This involves developing data mining models using machine learning algorithms, but can also be another output,  such a database processing.
-The key here is to make the system flexible enough to work with new data  and also i make the code easy to setup and run. Here are typical steps you’ll need to follow to build a good end to end project:
-
-•	Find an interesting topic – You won’t focus on a single static dataset, so you’ll want to find a topic instead such as flights, electricity pricing, health.
-
-•	Import and parse multiple datasets
-
-•	Create classifications or predictions.   Determine the needed features and create training and test data.  Using that to make predictions or classifications.
-
-•	Clean up and document your code
 
 
 The data set chosen for this Project is the "BreastCancer" data from the Mlbench library in R. For more information about mlbench, and to find extended documentation, follow this link:  https://cran.r-project.org/web/packages/mlbench/mlbench.pdf
@@ -65,3 +51,17 @@ A data frame with 699 observations on 11 variables, one being a character variab
 .  Donor: Olvi Mangasarian (mangasarian@cs.wisc.edu)
 
 .  Received: David W. Aha (aha@cs.jhu.edu)
+
+
+_Explanation of RMD_
+This RMD takes a data set and runs it through seven different classifier models, getting outputs for each model, than creating an ensemble model with all the results. 
+To get this script to work with your data you need to keep two things in mind:
+
+1. Standardize your labels and features-  Each model will want your label to be the first column in your dataset.  This has been done in the Import Data chunk of the code.
+2.  Calculation for ensemble models requires the labels to be changed from character factors to integers.  This was not done in our first step as leaving the data as it leads to easier interpretation of our classification results.  
+
+Within each code chunk are comments describing the actions different code are taking.  Following through the document you should be able to understand the flow of data and the decision-making process of its writer. 
+Below is a high level overview of the RMD file:
+Our first six code chunks deal with the loading in, cleaning, splitting data into training and validation sets, and the creation of our data frame to hold all of our predictive results. 
+Further code chunks all deal with a different classification model.  Pay attention to neural networks, as it is the only classifier that extends beyond a single code chunk.  
+Our last code chunk combines all our models scores to find a consensus classification for each record.  The Accuracy of our ensemble model is also added to our accuracy data frame.  
