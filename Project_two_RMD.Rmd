@@ -58,7 +58,7 @@ valid.df <- mydata[-t_index, ]
 
 ```
 
-```{r}
+```{r create accuracy data frame to compare results }
 #set up data frame for collecting accuracy
 accuracy.df <- data.frame(Model = seq(1, 8,1), Train_Accuracy_score = rep(0,8) ,Valid_Accuracy_score = rep(0,8))
 ```
@@ -172,12 +172,12 @@ accuracy.df[7,3] <- confusionMatrix(as.factor(bdrf.v.pred), as.factor(valid.df$C
 ```
 
 ```{r Ensamble model }
-#Pull in results from three models
-
+#Pull in results from all models
 
 ensamble.df <- cbind(as.data.frame(bdsvm.v.pred)[1],as.data.frame(bdnvb.v.pred)[1],as.data.frame(valid.class)[1],as.data.frame(bdtree.v.pred)[1],as.data.frame(ans),as.data.frame(bdrda.v.pred)[1],as.data.frame(bdrf.v.pred)[1])
 colnames(ensamble.df) <-c("svm", "nvb", "nnet","dectree","LOOCV", "rda", "rf" )
 
+#Changing our label to numeric so we can add across our rows.  
 ensamble.df$svm <- ifelse(ensamble.df$svm == "malignant",1,0)
 ensamble.df$nvb <- ifelse(ensamble.df$nvb == "malignant",1,0)
 ensamble.df$dectree <- ifelse(ensamble.df$dectree =="malignant",1,0)
@@ -186,6 +186,7 @@ ensamble.df$LOOCV <- ifelse(ensamble.df$LOOCV =="malignant",1,0)
 ensamble.df$rf <- ifelse(ensamble.df$rf =="malignant",1,0)
 #Use sum answer as output
 e <- as.matrix(ensamble.df) #matrix for rowsums
+
 #put our sums back onto the ensamble data frame. 
 ensamble.df$combo <- rowSums(e)
 
@@ -194,9 +195,7 @@ ensamble.df$combo_class <- ifelse(ensamble.df$combo >=4,"malignant", "benign")
 #Check our accuracy with our ensamble score 
 accuracy.df[8,1] <- "Combo Score "
 accuracy.df[8,3] <- confusionMatrix(as.factor(ensamble.df$combo_class), as.factor(valid.df$Class))$overall[1]
-```
 
-```{r}
 #Here is all of our models accuaracies.  We can take these results to our deployment when we decidee on which models to use.  
 accuracy.df
 ```
